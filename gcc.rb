@@ -45,9 +45,9 @@ end
 
 class Gcc < Formula
   homepage 'http://gcc.gnu.org'
-  url 'http://ftpmirror.gnu.org/gcc/gcc-4.6.3/gcc-4.6.3.tar.bz2'
-  mirror 'http://ftp.gnu.org/gnu/gcc/gcc-4.6.3/gcc-4.6.3.tar.bz2'
-  md5 '773092fe5194353b02bb0110052a972e'
+  url 'http://ftpmirror.gnu.org/gcc/gcc-4.7.0/gcc-4.7.0.tar.bz2'
+  mirror 'http://ftp.gnu.org/gnu/gcc/gcc-4.7.0/gcc-4.7.0.tar.bz2'
+  md5 '2a0f1d99fda235c29d40b561f81d9a77'
 
   depends_on 'gmp'
   depends_on 'libmpc'
