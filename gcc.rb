@@ -54,6 +54,20 @@ class Gcc < Formula
   depends_on 'libmpc'
   depends_on 'mpfr'
 
+  fails_with :clang do
+    build 421
+    cause <<-EOS.undent
+      We have had many different clang failure reports:
+        https://github.com/Homebrew/homebrew-dupes/issues/20
+        https://github.com/Homebrew/homebrew-dupes/issues/49
+        https://github.com/Homebrew/homebrew-dupes/pull/66
+        https://github.com/Homebrew/homebrew-dupes/issues/68
+      Unfortunately, nobody seems to be interested in investigating and fixing them.
+      If you have any knowledge to share or can provide a fix, please open an issue.
+      Thanks!
+      EOS
+  end
+
   def options
     [
       ['--enable-cxx', 'Build the g++ compiler'],
