@@ -117,7 +117,7 @@ class Gcc < Formula
       # ...and the binaries...
       "--bindir=#{bin}",
       # ...which are tagged with a suffix to distinguish them.
-      "--program-suffix=-#{version.slice(/\d\.\d/)}",
+      "--program-suffix=-#{version.to_s.slice(/\d\.\d/)}",
       "--with-gmp=#{gmp.prefix}",
       "--with-mpfr=#{mpfr.prefix}",
       "--with-mpc=#{libmpc.prefix}",
