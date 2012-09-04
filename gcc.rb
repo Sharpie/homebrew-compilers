@@ -4,38 +4,6 @@ require 'formula'
 # gccgo "is currently known to work on GNU/Linux and RTEMS. Solaris support
 # is in progress. It may or may not work on other platforms."
 
-def cxx?
-  ARGV.include? '--enable-cxx'
-end
-
-def fortran?
-  ARGV.include? '--enable-fortran'
-end
-
-def java?
-  ARGV.include? '--enable-java'
-end
-
-def objc?
-  ARGV.include? '--enable-objc'
-end
-
-def objcxx?
-  ARGV.include? '--enable-objcxx'
-end
-
-def build_everything?
-  ARGV.include? '--enable-all-languages'
-end
-
-def nls?
-  ARGV.include? '--enable-nls'
-end
-
-def profiledbuild?
-  ARGV.include? '--enable-profiled-build'
-end
-
 class Ecj < Formula
   # Little Known Fact: ecj, Eclipse Java Complier, is required in order to
   # produce a gcj compiler that can actually parse Java source code.
@@ -54,6 +22,15 @@ class Gcc < Formula
   depends_on 'libmpc'
   depends_on 'mpfr'
 
+  option 'enable-cxx', 'Build the g++ compiler'
+  option 'enable-fortran', 'Build the gfortran compiler'
+  option 'enable-java', 'Buld the gcj compiler'
+  option 'enable-objc', 'Enable Objective-C language support'
+  option 'enable-objcxx', 'Enable Objective-C++ language support'
+  option 'enable-all-languages', 'Enable all compilers and languages, except Ada'
+  option 'enable-nls', 'Build with natural language support'
+  option 'enable-profiled-build', 'Make use of profile guided optimization when bootstrapping GCC'
+
   fails_with :clang do
     build 421
     cause <<-EOS.undent
@@ -67,22 +44,6 @@ class Gcc < Formula
       Thanks!
       EOS
   end
-
-  def options
-    [
-      ['--enable-cxx', 'Build the g++ compiler'],
-      ['--enable-fortran', 'Build the gfortran compiler'],
-      ['--enable-java', 'Buld the gcj compiler'],
-      ['--enable-objc', 'Enable Objective-C language support'],
-      ['--enable-objcxx', 'Enable Objective-C++ language support'],
-      ['--enable-all-languages', 'Enable all compilers and languages, except Ada'],
-      ['--enable-nls', 'Build with natural language support'],
-      ['--enable-profiled-build', 'Make use of profile guided optimization when bootstrapping GCC']
-    ]
-  end
-
-  # Dont strip compilers.
-  skip_clean :all
 
   def install
     # Force 64-bit on systems that use it. Build failures reported for some
@@ -128,9 +89,9 @@ class Gcc < Formula
       "--disable-multilib"
     ]
 
-    args << '--disable-nls' unless nls?
+    args << '--disable-nls' unless build.include? 'enable-nls'
 
-    if build_everything?
+    if build.include? 'enable-all-languages'
       # Everything but Ada, which requires a pre-existing GCC Ada compiler
       # (gnat) to bootstrap. GCC 4.6.0 add go as a language option, but it is
       # currently only compilable on Linux.
@@ -140,14 +101,14 @@ class Gcc < Formula
       # here.
       languages = %w[c]
 
-      languages << 'c++' if cxx?
-      languages << 'fortran' if fortran?
-      languages << 'java' if java?
-      languages << 'objc' if objc?
-      languages << 'obj-c++' if objcxx?
+      languages << 'c++' if build.include? 'enable-cxx'
+      languages << 'fortran' if build.include? 'enable-fortran'
+      languages << 'java' if build.include? 'enable-java'
+      languages << 'objc' if build.include? 'enable-objc'
+      languages << 'obj-c++' if build.include? 'enable-objcxx'
     end
 
-    if java? or build_everything?
+    if build.include? 'enable-java' or build.include? 'enable-all-languages'
       source_dir = Pathname.new Dir.pwd
 
       Ecj.new.brew do |ecj|
@@ -168,7 +129,7 @@ class Gcc < Formula
 
       system '../configure', "--enable-languages=#{languages.join(',')}", *args
 
-      if profiledbuild?
+      if build.include? 'enable-profiled-build'
         # Takes longer to build, may bug out. Provided for those who want to
         # optimise all the way to 11.
         system 'make profiledbootstrap'
