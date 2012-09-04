@@ -41,7 +41,7 @@ class Ecj < Formula
   # produce a gcj compiler that can actually parse Java source code.
   url 'ftp://sourceware.org/pub/java/ecj-4.5.jar'
   mirror 'http://mirrors.kernel.org/sources.redhat.com/java/ecj-4.5.jar'
-  md5 'd7cd6a27c8801e66cbaa964a039ecfdb'
+  sha1 '58c1d79c64c8cd718550f32a932ccfde8d1e6449'
 end
 
 class Gcc < Formula
